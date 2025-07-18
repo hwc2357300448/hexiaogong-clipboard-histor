@@ -1,0 +1,330 @@
+<Window x:Class="ClipboardHistory.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="何小工-设置"
+        Width="480"
+        Height="580"
+        MinWidth="450"
+        MinHeight="520"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType"
+        TextOptions.TextHintingMode="Fixed"
+        Background="Transparent"
+        WindowStyle="None"
+        AllowsTransparency="True">
+    
+    <Window.Resources>
+        <!-- 现代按钮样式 -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Margin" Value="6"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="6"
+                                UseLayoutRounding="True">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"
+                                            Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#357ABD"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2E6DA4"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#BDC3C7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- 现代复选框样式 -->
+        <Style x:Key="ModernCheckBox" TargetType="CheckBox">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="0,8"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#374151"/>
+        </Style>
+        
+        <!-- 现代文本框样式 -->
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="MinHeight" Value="36"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="border" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6"
+                                UseLayoutRounding="True">
+                            <ScrollViewer x:Name="PART_ContentHost" 
+                                        Margin="{TemplateBinding Padding}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#4A90E2"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="#9CA3AF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- 区域标题样式 -->
+        <Style x:Key="SectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#1F2937"/>
+            <Setter Property="Margin" Value="0,20,0,12"/>
+        </Style>
+        
+        <!-- 标签样式 -->
+        <Style x:Key="Label" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Foreground" Value="#374151"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,12,0"/>
+        </Style>
+        
+        <!-- 描述文本样式 -->
+        <Style x:Key="Description" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#6B7280"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="LineHeight" Value="16"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+    </Window.Resources>
+    
+    <Border Background="White" 
+            BorderBrush="#E5E7EB" 
+            BorderThickness="1" 
+            CornerRadius="12"
+            UseLayoutRounding="True">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="2" 
+                            Direction="270" 
+                            Color="#000000" 
+                            Opacity="0.15" 
+                            BlurRadius="20"/>
+        </Border.Effect>
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- 标题栏 -->
+            <Border Grid.Row="0" 
+                    Background="#1F2937" 
+                    CornerRadius="12,12,0,0">
+                <Grid Height="48">
+                    <StackPanel Orientation="Horizontal" 
+                               VerticalAlignment="Center"
+                               Margin="20,0">
+                        <TextBlock Text="🔧" 
+                                  FontSize="18" 
+                                  Margin="0,0,8,0"
+                                  VerticalAlignment="Center"/>
+                        <TextBlock Text="何小工-设置" 
+                                  Foreground="White" 
+                                  FontSize="18" 
+                                  FontWeight="SemiBold"
+                                  VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- 主要内容 -->
+            <ScrollViewer Grid.Row="1" 
+                         VerticalScrollBarVisibility="Auto" 
+                         HorizontalScrollBarVisibility="Disabled"
+                         Margin="0,0,0,0">
+                <StackPanel Margin="24,16,24,16">
+                    
+                    <!-- 启动设置 -->
+                    <TextBlock Text="启动设置" Style="{StaticResource SectionHeader}"/>
+                    <Border Background="#F9FAFB" 
+                            BorderBrush="#E5E7EB" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="16"
+                            Margin="0,0,0,8">
+                        <StackPanel>
+                            <CheckBox x:Name="AutoStartCheckBox"
+                                      Content="开机自动启动"
+                                      Style="{StaticResource ModernCheckBox}"
+                                      Checked="AutoStartCheckBox_Checked"
+                                      Unchecked="AutoStartCheckBox_Unchecked"/>
+                            <TextBlock Text="启用后程序将在Windows启动时自动运行，并在系统托盘中显示。"
+                                      Style="{StaticResource Description}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- 历史记录设置 -->
+                    <TextBlock Text="历史记录设置" Style="{StaticResource SectionHeader}"/>
+                    <Border Background="#F9FAFB" 
+                            BorderBrush="#E5E7EB" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="16"
+                            Margin="0,0,0,8">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                          Text="最大保存记录数：" 
+                                          Style="{StaticResource Label}"/>
+                                <TextBox Grid.Column="1" 
+                                         x:Name="MaxHistoryCountTextBox" 
+                                         Style="{StaticResource ModernTextBox}"
+                                         Text="500"
+                                         PreviewTextInput="NumberTextBox_PreviewTextInput"/>
+                                <TextBlock Grid.Column="2" 
+                                          Text="条" 
+                                          Style="{StaticResource Label}" 
+                                          Margin="8,0,0,0"/>
+                            </Grid>
+                            <TextBlock Text="设置剪贴板历史记录的最大保存数量（10-10000条）。"
+                                      Style="{StaticResource Description}"
+                                      Margin="0,0,0,16"/>
+                            
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="140"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                          Text="自动清理天数：" 
+                                          Style="{StaticResource Label}"/>
+                                <TextBox Grid.Column="1" 
+                                         x:Name="AutoCleanupDaysTextBox" 
+                                         Style="{StaticResource ModernTextBox}"
+                                         Text="30"
+                                         PreviewTextInput="NumberTextBox_PreviewTextInput"/>
+                                <TextBlock Grid.Column="2" 
+                                          Text="天" 
+                                          Style="{StaticResource Label}" 
+                                          Margin="8,0,0,0"/>
+                            </Grid>
+                            <TextBlock Text="自动清理超过指定天数的历史记录（1-365天）。"
+                                      Style="{StaticResource Description}"
+                                      Margin="0,0,0,16"/>
+                            
+                            <CheckBox x:Name="EnableAutoCleanupCheckBox"
+                                      Content="启用自动清理过期记录"
+                                      Style="{StaticResource ModernCheckBox}"
+                                      IsChecked="True"/>
+                            <TextBlock Text="启用后系统会自动清理过期的历史记录，收藏的记录不会被清理。"
+                                      Style="{StaticResource Description}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- 关于信息 -->
+                    <TextBlock Text="关于" Style="{StaticResource SectionHeader}"/>
+                    <Border Background="#F9FAFB" 
+                            BorderBrush="#E5E7EB" 
+                            BorderThickness="1" 
+                            CornerRadius="8" 
+                            Padding="16"
+                            Margin="0,0,0,8">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                          Text="📋" 
+                                          FontSize="24" 
+                                          Margin="0,0,12,0"
+                                          VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="剪贴板历史 v1.0.0" 
+                                              FontSize="16" 
+                                              FontWeight="SemiBold" 
+                                              Foreground="#1F2937"/>
+                                    <TextBlock Text="作者：何文才" 
+                                              FontSize="14" 
+                                              Foreground="#6B7280" 
+                                              Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                            <TextBlock Text="一个简单、现代化的Windows剪贴板历史记录工具，支持文本、图片和文件的历史记录管理。"
+                                      Style="{StaticResource Description}"/>
+                        </StackPanel>
+                    </Border>
+                    
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- 底部按钮区域 -->
+            <Border Grid.Row="2" 
+                    Background="#F9FAFB" 
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="0,1,0,0"
+                    CornerRadius="0,0,12,12">
+                <Grid Height="72">
+                    <StackPanel Orientation="Horizontal" 
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"
+                               Margin="24,0">
+                        <Button Content="重置默认" 
+                                Style="{StaticResource ModernButton}"
+                                Background="#6B7280"
+                                Click="ResetButton_Click"/>
+                        <Button Content="确定" 
+                                Style="{StaticResource ModernButton}"
+                                Background="#10B981"
+                                Click="OkButton_Click"/>
+                        <Button Content="取消" 
+                                Style="{StaticResource ModernButton}"
+                                Background="#EF4444"
+                                Click="CancelButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

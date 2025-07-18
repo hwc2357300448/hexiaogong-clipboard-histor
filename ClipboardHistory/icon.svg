@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="toolGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F8F9FA;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="2" dy="2" stdDeviation="4" flood-color="#000000" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+  
+  <!-- 圆角矩形背景 -->
+  <rect x="16" y="16" width="224" height="224" rx="48" ry="48" 
+        fill="url(#bgGradient)" stroke="#2C3E50" stroke-width="4" filter="url(#shadow)"/>
+  
+  <!-- 工具图标组合 -->
+  <g transform="translate(128, 100)">
+    <!-- 扳手主体 -->
+    <path d="M-32,-24 L-16,-24 L-16,-8 L16,-8 L16,-24 L32,-24 L32,24 L-32,24 Z" 
+          fill="url(#toolGradient)" stroke="#2C3E50" stroke-width="2"/>
+    
+    <!-- 扳手中心圆 -->
+    <circle cx="0" cy="0" r="12" fill="#F39C12" stroke="#2C3E50" stroke-width="2"/>
+    <circle cx="0" cy="0" r="6" fill="#FFFFFF"/>
+    
+    <!-- 螺丝刀手柄 -->
+    <rect x="-40" y="12" width="12" height="24" rx="4" fill="url(#toolGradient)" stroke="#2C3E50" stroke-width="1"/>
+    <rect x="28" y="12" width="12" height="24" rx="4" fill="url(#toolGradient)" stroke="#2C3E50" stroke-width="1"/>
+    
+    <!-- 螺丝刀尖端 -->
+    <rect x="-38" y="36" width="8" height="8" fill="#C0C0C0"/>
+    <rect x="30" y="36" width="8" height="8" fill="#C0C0C0"/>
+  </g>
+  
+  <!-- 品牌标识 -->
+  <g transform="translate(128, 180)">
+    <!-- 何小工文字 -->
+    <text x="0" y="0" text-anchor="middle" 
+          font-family="Microsoft YaHei, SimHei, Arial, sans-serif" 
+          font-size="24" font-weight="bold" fill="#FFFFFF">何小工</text>
+    
+    <!-- 英文副标题 -->
+    <text x="0" y="20" text-anchor="middle" 
+          font-family="Arial, sans-serif" 
+          font-size="14" fill="#E8F4FD">HeXiaoGong</text>
+  </g>
+  
+  <!-- 装饰性元素 -->
+  <g opacity="0.1">
+    <circle cx="60" cy="60" r="8" fill="#FFFFFF"/>
+    <circle cx="196" cy="60" r="8" fill="#FFFFFF"/>
+    <circle cx="60" cy="196" r="8" fill="#FFFFFF"/>
+    <circle cx="196" cy="196" r="8" fill="#FFFFFF"/>
+  </g>
+</svg>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景渐变 -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="toolGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#F8F9FA;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- 圆角矩形背景 -->
+  <rect x="4" y="4" width="56" height="56" rx="12" ry="12" 
+        fill="url(#bgGradient)" stroke="#2C3E50" stroke-width="1"/>
+  
+  <!-- 工具图标组合 -->
+  <g transform="translate(32, 28)">
+    <!-- 扳手 -->
+    <path d="M-8,-6 L-4,-6 L-4,-2 L4,-2 L4,-6 L8,-6 L8,6 L-8,6 Z" 
+          fill="url(#toolGradient)" stroke="#2C3E50" stroke-width="0.5"/>
+    <circle cx="0" cy="0" r="2" fill="#F39C12"/>
+    
+    <!-- 螺丝刀手柄 -->
+    <rect x="-10" y="3" width="3" height="6" rx="1" fill="url(#toolGradient)"/>
+    <rect x="7" y="3" width="3" height="6" rx="1" fill="url(#toolGradient)"/>
+  </g>
+  
+  <!-- 字母 "H" 标识 -->
+  <text x="32" y="50" text-anchor="middle" 
+        font-family="Arial, sans-serif" 
+        font-size="12" font-weight="bold" fill="#FFFFFF">H</text>
+</svg>

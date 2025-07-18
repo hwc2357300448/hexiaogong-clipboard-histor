@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景圆形 -->
+  <circle cx="64" cy="64" r="60" fill="#4A90E2" stroke="#2C3E50" stroke-width="2"/>
+  
+  <!-- 工具图标 -->
+  <g transform="translate(64, 40)">
+    <!-- 扳手 -->
+    <path d="M-15,-8 L-5,-8 L-5,0 L5,0 L5,-8 L15,-8 L15,8 L-15,8 Z" 
+          fill="#FFFFFF" stroke="#2C3E50" stroke-width="1"/>
+    <circle cx="0" cy="0" r="3" fill="#F39C12"/>
+    
+    <!-- 螺丝刀 -->
+    <path d="M-20,5 L-15,5 L-15,15 L-20,15 Z" fill="#FFFFFF"/>
+    <path d="M15,5 L20,5 L20,15 L15,15 Z" fill="#FFFFFF"/>
+  </g>
+  
+  <!-- 文字 "何小工" -->
+  <text x="64" y="85" text-anchor="middle" 
+        font-family="Microsoft YaHei, SimHei, Arial, sans-serif" 
+        font-size="16" font-weight="bold" fill="#FFFFFF">何小工</text>
+  
+  <!-- 英文副标题 -->
+  <text x="64" y="100" text-anchor="middle" 
+        font-family="Arial, sans-serif" 
+        font-size="10" fill="#E8F4FD">HeXiaoGong</text>
+</svg>
