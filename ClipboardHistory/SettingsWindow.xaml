@@ -285,8 +285,12 @@
                                               FontSize="16" 
                                               FontWeight="SemiBold" 
                                               Foreground="#1F2937"/>
-                                    <TextBlock Text="作者：何文才" 
+                                    <TextBlock Text="作者：何小工" 
                                               FontSize="14" 
+                                              Foreground="#6B7280" 
+                                              Margin="0,2,0,0"/>
+                                    <TextBlock Text="微信：hwc19970111 | 邮箱：2357300448@qq.com" 
+                                              FontSize="12" 
                                               Foreground="#6B7280" 
                                               Margin="0,2,0,0"/>
                                 </StackPanel>

@@ -41,7 +41,7 @@
 ## 📦 安装和使用
 
 ### 快速安装
-1. 从 [Releases](https://github.com/hewencai/clipboard-history/releases) 页面下载最新版本的 `ClipboardHistory-Setup.exe`
+1. 从 [Releases](https://github.com/hwc2357300448/hexiaogong-clipboard-histor/releases) 页面下载最新版本的 `ClipboardHistory-Setup.exe`
 2. 右键以管理员身份运行安装程序
 3. 按照安装向导完成安装
 4. 程序将自动启动并在系统托盘运行
@@ -49,8 +49,8 @@
 ### 从源码编译
 ```bash
 # 克隆项目
-git clone https://github.com/hewencai/clipboard-history.git
-cd clipboard-history
+git clone https://github.com/hwc2357300448/hexiaogong-clipboard-histor.git
+cd hexiaogong-clipboard-histor
 
 # 还原依赖包
 dotnet restore
@@ -105,7 +105,7 @@ dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true 
   "EnableAutoCleanup": true,
   "FilterSensitiveData": true,
   "DatabasePath": "clipboard_history.db",
-  "Author": "何文才",
+  "Author": "何小工",
   "Version": "1.0.0"
 }
 ```
@@ -209,13 +209,18 @@ ClipboardHistory/
 
 ## 👨‍💻 作者
 
-**何文才** - 项目作者和维护者
+**何小工** - 项目作者和维护者
+
+## 💬 联系方式
+
+- **微信**: hwc19970111
+- **邮箱**: 2357300448@qq.com
 
 ## 💬 支持
 
 如果你觉得这个项目有用，请给它一个 ⭐️！
 
-如有问题或建议，请创建 [Issue](https://github.com/hewencai/clipboard-history/issues)。
+如有问题或建议，请创建 [Issue](https://github.com/hwc2357300448/hexiaogong-clipboard-histor/issues)。
 
 ---
 

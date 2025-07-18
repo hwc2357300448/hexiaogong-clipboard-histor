@@ -4,7 +4,7 @@
 !define PRODUCT_NAME "HeXiaoGong-ClipboardHistory"
 !define PRODUCT_VERSION "1.0.0"
 !define PRODUCT_PUBLISHER "HeXiaoGong"
-!define PRODUCT_WEB_SITE "https://github.com/clipboardhistory"
+!define PRODUCT_WEB_SITE "https://github.com/hwc2357300448/hexiaogong-clipboard-histor"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\ClipboardHistory.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
