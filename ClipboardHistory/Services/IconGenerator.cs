@@ -2,11 +2,15 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace ClipboardHistory.Services
 {
     public static class IconGenerator
     {
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool DestroyIcon(IntPtr hIcon);
+
         public static Icon CreateClipboardIcon()
         {
             // 创建一个 32x32 的位图
@@ -48,10 +52,20 @@ namespace ClipboardHistory.Services
                         }
                     }
                 }
-                
+
                 // 转换为图标
                 IntPtr hIcon = bitmap.GetHicon();
-                return Icon.FromHandle(hIcon);
+                try
+                {
+                    // 克隆图标以确保资源独立
+                    Icon tempIcon = Icon.FromHandle(hIcon);
+                    return (Icon)tempIcon.Clone();
+                }
+                finally
+                {
+                    // 释放非托管句柄
+                    DestroyIcon(hIcon);
+                }
             }
         }
         

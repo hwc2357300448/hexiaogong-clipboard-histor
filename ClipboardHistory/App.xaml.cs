@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
@@ -13,16 +14,32 @@ namespace ClipboardHistory
 {
     public partial class App : Application
     {
-        private TaskbarIcon? _trayIcon;
         private ClipboardMonitor? _clipboardMonitor;
         private HotkeyService? _hotkeyService;
         private StorageService? _storageService;
         private MainWindow? _mainWindow;
         private AppSettings _settings = new();
+        private Mutex? _instanceMutex;
+        private const string MutexName = "Global\\HeXiaoGong_ClipboardHistory_SingleInstance";
 
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+
+            // 单实例检测
+            bool createdNew;
+            _instanceMutex = new Mutex(true, MutexName, out createdNew);
+
+            if (!createdNew)
+            {
+                MessageBox.Show("何小工-剪贴板历史已在运行中！\n\n请使用 Ctrl+Shift+V 调出窗口。",
+                    "程序已运行",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                Console.WriteLine("检测到已有实例运行，退出...");
+                Shutdown();
+                return;
+            }
 
             try
             {
@@ -32,12 +49,9 @@ namespace ClipboardHistory
                 
                 InitializeServices();
                 Console.WriteLine("服务已初始化");
-                
-                InitializeTrayIcon();
-                Console.WriteLine("托盘图标已创建");
-                
+
                 InitializeMainWindow();
-                Console.WriteLine("主窗口已创建");
+                Console.WriteLine("主窗口已创建（包含托盘图标）");
                 
                 SetupHotkey();
                 Console.WriteLine("热键已设置");
@@ -93,53 +107,6 @@ namespace ClipboardHistory
         {
             _storageService = new StorageService(_settings);
             _hotkeyService = new HotkeyService();
-        }
-
-        private void InitializeTrayIcon()
-        {
-            _trayIcon = new TaskbarIcon
-            {
-                ToolTipText = "剪贴板历史工具"
-            };
-
-            // 创建简单的图标或使用默认图标
-            try
-            {
-                if (File.Exists("icon.ico"))
-                {
-                    _trayIcon.Icon = new System.Drawing.Icon("icon.ico");
-                }
-                else
-                {
-                    // 使用系统默认图标
-                    _trayIcon.Icon = System.Drawing.SystemIcons.Application;
-                }
-            }
-            catch
-            {
-                _trayIcon.Icon = System.Drawing.SystemIcons.Application;
-            }
-
-            var contextMenu = new System.Windows.Controls.ContextMenu();
-            
-            var showHistoryItem = new System.Windows.Controls.MenuItem { Header = "显示历史" };
-            showHistoryItem.Click += (s, e) => ShowMainWindow();
-            contextMenu.Items.Add(showHistoryItem);
-            
-            contextMenu.Items.Add(new System.Windows.Controls.Separator());
-            
-            var settingsItem = new System.Windows.Controls.MenuItem { Header = "设置" };
-            settingsItem.Click += (s, e) => MessageBox.Show("设置功能开发中...", "设置", MessageBoxButton.OK, MessageBoxImage.Information);
-            contextMenu.Items.Add(settingsItem);
-            
-            contextMenu.Items.Add(new System.Windows.Controls.Separator());
-            
-            var exitItem = new System.Windows.Controls.MenuItem { Header = "退出" };
-            exitItem.Click += async (s, e) => { await SaveSettingsAsync(); Current.Shutdown(); };
-            contextMenu.Items.Add(exitItem);
-
-            _trayIcon.ContextMenu = contextMenu;
-            _trayIcon.TrayMouseDoubleClick += (s, e) => ShowMainWindow();
         }
 
         private void InitializeMainWindow()
@@ -250,7 +217,15 @@ namespace ClipboardHistory
         {
             _clipboardMonitor?.Dispose();
             _hotkeyService?.Dispose();
-            _trayIcon?.Dispose();
+
+            // 释放单实例互斥量
+            if (_instanceMutex != null)
+            {
+                _instanceMutex.ReleaseMutex();
+                _instanceMutex.Dispose();
+            }
+
+            // 托盘图标由 MainWindow 的 SystemTrayService 管理，会在 MainWindow.Closing 时释放
             await SaveSettingsAsync();
             base.OnExit(e);
         }

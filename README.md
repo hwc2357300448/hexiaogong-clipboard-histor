@@ -2,7 +2,7 @@
 
 一个功能强大、现代化的 Windows 剪贴板历史记录工具，支持文本、图片和文件的历史记录管理。
 
-![GitHub release](https://img.shields.io/badge/release-v1.0.0-blue)
+![GitHub release](https://img.shields.io/badge/release-v1.1.0-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
 ![.NET](https://img.shields.io/badge/.NET-8.0-purple)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -164,7 +164,19 @@ ClipboardHistory/
 
 ## 🚀 发布说明
 
-### v1.0.0 (2025-07-18)
+### v1.1.0 (2025-11-14)
+- ⭐ 新增文本内容预览弹窗功能（Space键）
+- ⭐ 新增收藏列表拖拽排序功能
+- ⭐ 新增管理员权限开机自启（任务计划程序）
+- ⚡ 数据库性能大幅优化（插入快10倍，搜索快2-5倍）
+- ⚡ UI渲染优化，支持流畅滚动大量数据
+- 🔧 修复单文件发布数据库路径问题
+- 🔧 修复数据库列完整性验证
+- 🔧 修复GDI句柄内存泄漏
+- 🔧 修复双重托盘图标问题
+- ✨ 滚动条样式优化和键盘导航增强
+
+### v1.0.0 (2025-01-10)
 - ✅ 完整的剪贴板历史记录功能
 - ✅ 现代化的用户界面设计
 - ✅ 完善的系统集成和托盘支持

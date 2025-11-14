@@ -8,23 +8,24 @@ namespace ClipboardHistory
 {
     public partial class SettingsWindow : Window
     {
-        private readonly StartupService _startupService;
+        private readonly TaskSchedulerService _taskSchedulerService;
         private readonly SettingsService _settingsService;
-        
+        private bool _isProcessingStartup = false; // 防止重复触发
+
         public SettingsWindow()
         {
             InitializeComponent();
-            _startupService = new StartupService();
+            _taskSchedulerService = new TaskSchedulerService();
             _settingsService = new SettingsService();
             LoadSettings();
         }
-        
+
         private void LoadSettings()
         {
             var settings = _settingsService.Settings;
-            
+
             // 加载开机自启设置
-            AutoStartCheckBox.IsChecked = _startupService.IsStartupEnabled();
+            AutoStartCheckBox.IsChecked = _taskSchedulerService.IsStartupTaskEnabled();
             
             // 加载历史记录设置
             MaxHistoryCountTextBox.Text = settings.MaxHistoryCount.ToString();
@@ -52,21 +53,49 @@ namespace ClipboardHistory
         
         private void AutoStartCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            if (!_startupService.SetStartupEnabled(true))
+            if (_isProcessingStartup) return;
+            _isProcessingStartup = true;
+            try
             {
-                MessageBox.Show("设置开机自启失败，请以管理员权限运行程序。", "错误", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                AutoStartCheckBox.IsChecked = false;
+                if (!_taskSchedulerService.CreateStartupTask())
+                {
+                    MessageBox.Show("创建开机自启任务失败。可能原因：\n1. 用户取消了UAC权限请求\n2. 系统权限不足\n\n请允许UAC提示以启用此功能。", "设置失败",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    AutoStartCheckBox.IsChecked = false;
+                }
+                else
+                {
+                    MessageBox.Show("开机自启任务已创建成功！\n程序将在下次登录时以管理员权限自动启动。", "设置成功",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            finally
+            {
+                _isProcessingStartup = false;
             }
         }
-        
+
         private void AutoStartCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
-            if (!_startupService.SetStartupEnabled(false))
+            if (_isProcessingStartup) return;
+            _isProcessingStartup = true;
+            try
             {
-                MessageBox.Show("取消开机自启失败。", "错误", 
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-                AutoStartCheckBox.IsChecked = true;
+                if (!_taskSchedulerService.DeleteStartupTask())
+                {
+                    MessageBox.Show("删除开机自启任务失败。可能原因：\n1. 用户取消了UAC权限请求\n2. 任务不存在\n\n请允许UAC提示以取消此功能。", "删除失败",
+                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    AutoStartCheckBox.IsChecked = true;
+                }
+                else
+                {
+                    MessageBox.Show("开机自启任务已删除。", "删除成功",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            finally
+            {
+                _isProcessingStartup = false;
             }
         }
         

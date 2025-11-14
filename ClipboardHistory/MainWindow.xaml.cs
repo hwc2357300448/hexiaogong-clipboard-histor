@@ -242,6 +242,50 @@ namespace ClipboardHistory
                     e.Handled = true;
                 }
             }
+            else if (e.Key == Key.Home)
+            {
+                // Home 键：跳转到第一项
+                if (ClipboardItems.Count > 0)
+                {
+                    HistoryListBox.SelectedIndex = 0;
+                    HistoryListBox.ScrollIntoView(ClipboardItems[0]);
+                    HistoryListBox.Focus();
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.End)
+            {
+                // End 键：跳转到最后一项
+                if (ClipboardItems.Count > 0)
+                {
+                    HistoryListBox.SelectedIndex = ClipboardItems.Count - 1;
+                    HistoryListBox.ScrollIntoView(ClipboardItems[ClipboardItems.Count - 1]);
+                    HistoryListBox.Focus();
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.PageUp)
+            {
+                // PageUp：向上翻页
+                if (ClipboardItems.Count > 0)
+                {
+                    int newIndex = Math.Max(0, HistoryListBox.SelectedIndex - 10);
+                    HistoryListBox.SelectedIndex = newIndex;
+                    HistoryListBox.ScrollIntoView(ClipboardItems[newIndex]);
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.PageDown)
+            {
+                // PageDown：向下翻页
+                if (ClipboardItems.Count > 0)
+                {
+                    int newIndex = Math.Min(ClipboardItems.Count - 1, HistoryListBox.SelectedIndex + 10);
+                    HistoryListBox.SelectedIndex = newIndex;
+                    HistoryListBox.ScrollIntoView(ClipboardItems[newIndex]);
+                    e.Handled = true;
+                }
+            }
         }
 
         private async void HistoryListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -269,10 +313,64 @@ namespace ClipboardHistory
                 await DeleteSelectedItemAsync();
                 e.Handled = true;
             }
-            else if (e.Key == Key.F && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+            else if (e.Key == Key.Space && SelectedItem != null)
             {
-                SearchTextBox.Focus();
+                // Space 键：显示预览窗口
+                ShowPreview();
                 e.Handled = true;
+            }
+            else if (e.Key == Key.F)
+            {
+                // Ctrl+F: 聚焦搜索框
+                if ((Keyboard.Modifiers & ModifierKeys.Control) != 0)
+                {
+                    SearchTextBox.Focus();
+                    e.Handled = true;
+                }
+                // F: 切换收藏状态
+                else if (SelectedItem != null)
+                {
+                    await _storageService.ToggleFavoriteAsync(SelectedItem.Id);
+                    await LoadHistoryAsync();
+                    StatusText = SelectedItem.IsFavorite ? "已取消收藏" : "已收藏";
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.Up && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+            {
+                // Ctrl+↑: 上移收藏项
+                if (SelectedItem != null && SelectedItem.IsFavorite)
+                {
+                    var currentIndex = HistoryListBox.SelectedIndex;
+                    await _storageService.MoveFavoriteUpAsync(SelectedItem.Id);
+                    await LoadHistoryAsync();
+
+                    // 保持选中同一项（索引可能会变）
+                    if (currentIndex > 0)
+                    {
+                        HistoryListBox.SelectedIndex = currentIndex - 1;
+                    }
+                    StatusText = "已上移";
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.Down && (Keyboard.Modifiers & ModifierKeys.Control) != 0)
+            {
+                // Ctrl+↓: 下移收藏项
+                if (SelectedItem != null && SelectedItem.IsFavorite)
+                {
+                    var currentIndex = HistoryListBox.SelectedIndex;
+                    await _storageService.MoveFavoriteDownAsync(SelectedItem.Id);
+                    await LoadHistoryAsync();
+
+                    // 保持选中同一项（索引可能会变）
+                    if (currentIndex < ClipboardItems.Count - 1)
+                    {
+                        HistoryListBox.SelectedIndex = currentIndex + 1;
+                    }
+                    StatusText = "已下移";
+                    e.Handled = true;
+                }
             }
         }
 
@@ -283,6 +381,20 @@ namespace ClipboardHistory
                 await _storageService.ToggleFavoriteAsync(SelectedItem.Id);
                 await LoadHistoryAsync();
                 StatusText = "收藏状态已切换";
+            }
+        }
+
+        private async void FavoriteIconButton_Click(object sender, RoutedEventArgs e)
+        {
+            // 从按钮获取数据上下文中的 ClipboardItem
+            if (sender is Button button && button.DataContext is ClipboardItem item)
+            {
+                await _storageService.ToggleFavoriteAsync(item.Id);
+                await LoadHistoryAsync();
+                StatusText = item.IsFavorite ? "已取消收藏" : "已收藏";
+
+                // 阻止事件冒泡到ListBoxItem，避免触发选择
+                e.Handled = true;
             }
         }
 
@@ -383,6 +495,31 @@ namespace ClipboardHistory
             StatusText = "项目已删除";
         }
 
+        private void ShowPreview()
+        {
+            if (SelectedItem == null) return;
+
+            // 支持文本和图片预览
+            if (SelectedItem.DataType == ClipboardDataType.Files)
+            {
+                StatusText = "文件列表暂不支持预览";
+                return;
+            }
+
+            try
+            {
+                var previewWindow = new PreviewWindow(SelectedItem);
+                previewWindow.Owner = this;
+                previewWindow.ShowDialog();
+                StatusText = "预览已关闭";
+            }
+            catch (Exception ex)
+            {
+                StatusText = $"打开预览失败: {ex.Message}";
+                Console.WriteLine($"打开预览失败: {ex.Message}");
+            }
+        }
+
         private static System.Windows.Media.Imaging.BitmapSource ImageFromByteArray(byte[] data)
         {
             using var stream = new System.IO.MemoryStream(data);
@@ -425,6 +562,23 @@ namespace ClipboardHistory
                 ClipboardDataType.Files => "文件",
                 _ => "未知"
             };
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class FavoriteTooltipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool isFavorite)
+            {
+                return isFavorite ? "取消收藏 (F)" : "收藏 (F)";
+            }
+            return "收藏";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

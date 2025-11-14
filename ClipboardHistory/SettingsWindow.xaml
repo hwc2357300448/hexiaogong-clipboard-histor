@@ -188,11 +188,11 @@
                             Margin="0,0,0,8">
                         <StackPanel>
                             <CheckBox x:Name="AutoStartCheckBox"
-                                      Content="开机自动启动"
+                                      Content="开机自动启动（管理员权限）"
                                       Style="{StaticResource ModernCheckBox}"
                                       Checked="AutoStartCheckBox_Checked"
                                       Unchecked="AutoStartCheckBox_Unchecked"/>
-                            <TextBlock Text="启用后程序将在Windows启动时自动运行，并在系统托盘中显示。"
+                            <TextBlock Text="启用后程序将在Windows启动时以管理员权限自动运行。使用Windows任务计划程序实现，首次启用需要UAC授权。"
                                       Style="{StaticResource Description}"/>
                         </StackPanel>
                     </Border>

@@ -102,8 +102,8 @@ namespace ClipboardHistory.Services
                 {
                     var text = Clipboard.GetText();
                     Console.WriteLine($"检测到文本: {text.Substring(0, Math.Min(50, text.Length))}...");
-                    
-                    if (!string.IsNullOrWhiteSpace(text) && !IsSensitiveData(text))
+
+                    if (!string.IsNullOrWhiteSpace(text))
                     {
                         var item = new ClipboardItem
                         {
@@ -161,22 +161,6 @@ namespace ClipboardHistory.Services
             {
                 Console.WriteLine($"处理剪贴板变化时出错: {ex.Message}");
             }
-        }
-
-        private bool IsSensitiveData(string text)
-        {
-            if (!_settings.FilterSensitiveData) return false;
-
-            var sensitivePatterns = new[]
-            {
-                @"\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b",  // 银行卡号
-                @"\b\d{3}-\d{2}-\d{4}\b",                      // 社会保险号
-                @"password|密码|pwd",                           // 密码相关
-                @"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b" // 邮箱
-            };
-
-            return sensitivePatterns.Any(pattern => 
-                Regex.IsMatch(text, pattern, RegexOptions.IgnoreCase));
         }
 
         private static byte[] BitmapSourceToByteArray(BitmapSource bitmapSource)

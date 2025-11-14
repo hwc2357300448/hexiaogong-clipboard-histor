@@ -23,7 +23,8 @@
     
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        
+        <local:FavoriteTooltipConverter x:Key="FavoriteTooltipConverter"/>
+
         <!-- 现代按钮样式 -->
         <Style x:Key="ModernButton" TargetType="Button">
             <Setter Property="Background" Value="#4A90E2"/>
@@ -148,6 +149,75 @@
                     <Setter Property="Background" Value="#DC2626"/>
                 </Trigger>
             </Style.Triggers>
+        </Style>
+
+        <!-- 自定义滚动条样式 -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Width" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollBar">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}"
+                                   CornerRadius="4"/>
+                            <Track x:Name="PART_Track" IsDirectionReversed="True">
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Style>
+                                            <Style TargetType="Thumb">
+                                                <Setter Property="Background" Value="#D1D5DB"/>
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Thumb">
+                                                            <Border x:Name="ThumbBorder"
+                                                                   Background="{TemplateBinding Background}"
+                                                                   CornerRadius="4"
+                                                                   Margin="1">
+                                                                <Border.RenderTransform>
+                                                                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                                                                </Border.RenderTransform>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="ThumbBorder" Property="Background" Value="#9CA3AF"/>
+                                                                    <Trigger.EnterActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetName="ThumbBorder"
+                                                                                               Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                                               To="1.5"
+                                                                                               Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.EnterActions>
+                                                                    <Trigger.ExitActions>
+                                                                        <BeginStoryboard>
+                                                                            <Storyboard>
+                                                                                <DoubleAnimation Storyboard.TargetName="ThumbBorder"
+                                                                                               Storyboard.TargetProperty="(Border.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                                               To="1"
+                                                                                               Duration="0:0:0.2"/>
+                                                                            </Storyboard>
+                                                                        </BeginStoryboard>
+                                                                    </Trigger.ExitActions>
+                                                                </Trigger>
+                                                                <Trigger Property="IsDragging" Value="True">
+                                                                    <Setter TargetName="ThumbBorder" Property="Background" Value="#6B7280"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Thumb.Style>
+                                    </Thumb>
+                                </Track.Thumb>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </Window.Resources>
 
@@ -295,11 +365,16 @@
                         BorderThickness="1" 
                         CornerRadius="8"
                         UseLayoutRounding="True">
-                    <ListBox x:Name="HistoryListBox" 
+                    <ListBox x:Name="HistoryListBox"
                             ItemsSource="{Binding ClipboardItems}"
                             SelectedItem="{Binding SelectedItem}"
                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            ScrollViewer.CanContentScroll="True"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.VirtualizationMode="Recycling"
+                            VirtualizingPanel.CacheLength="20"
+                            VirtualizingPanel.CacheLengthUnit="Item"
                             BorderThickness="0"
                             Background="Transparent"
                             Focusable="True"
@@ -382,13 +457,48 @@
                                                   Margin="0,6,0,0"/>
                                     </StackPanel>
                                     
-                                    <TextBlock Grid.Column="1" 
-                                              Text="⭐" 
-                                              FontSize="16" 
-                                              Foreground="#F59E0B" 
-                                              Margin="12,0"
-                                              VerticalAlignment="Center"
-                                              Visibility="{Binding IsFavorite, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <!-- 收藏按钮 -->
+                                    <Button Grid.Column="1"
+                                           FontSize="18"
+                                           Margin="8,0"
+                                           Padding="4"
+                                           Background="Transparent"
+                                           BorderThickness="0"
+                                           Cursor="Hand"
+                                           VerticalAlignment="Center"
+                                           Click="FavoriteIconButton_Click"
+                                           ToolTip="{Binding IsFavorite, Converter={StaticResource FavoriteTooltipConverter}}">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}"
+                                                                   Padding="{TemplateBinding Padding}"
+                                                                   CornerRadius="4">
+                                                                <TextBlock x:Name="StarIcon"
+                                                                          Text="☆"
+                                                                          FontSize="{TemplateBinding FontSize}"
+                                                                          Foreground="#9CA3AF"
+                                                                          HorizontalAlignment="Center"
+                                                                          VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                                    <Setter TargetName="StarIcon" Property="Text" Value="⭐"/>
+                                                                    <Setter TargetName="StarIcon" Property="Foreground" Value="#F59E0B"/>
+                                                                </DataTrigger>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#F3F4F6"/>
+                                                                    <Setter TargetName="StarIcon" Property="Foreground" Value="#F59E0B"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
                                     
                                     <Border Grid.Column="2" 
                                             Background="#F3F4F6" 
@@ -421,10 +531,10 @@
                     BorderThickness="0,1,0,0"
                     CornerRadius="0,0,12,12">
                 <Grid Height="32">
-                    <TextBlock Text="使用 Ctrl+Shift+V 快速打开，双击或回车粘贴"
-                              Margin="20,0" 
-                              VerticalAlignment="Center" 
-                              FontSize="11" 
+                    <TextBlock Text="Ctrl+Shift+V 打开 | ↑↓ 选择 | Ctrl+↑↓ 调整收藏顺序 | Space 预览 | Enter 粘贴 | F 收藏 | Del 删除"
+                              Margin="20,0"
+                              VerticalAlignment="Center"
+                              FontSize="11"
                               Foreground="#6B7280"/>
                 </Grid>
             </Border>

@@ -6,8 +6,8 @@
     <UseWPF>true</UseWPF>
     <AssemblyTitle>何小工-剪贴板历史</AssemblyTitle>
     <AssemblyDescription>何小工系列 - Windows 剪贴板历史记录工具</AssemblyDescription>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
     <Copyright>Copyright © 2025 何小工(HeXiaoGong)</Copyright>
     <AssemblyCompany>何小工(HeXiaoGong)</AssemblyCompany>
     <AssemblyProduct>何小工-剪贴板历史</AssemblyProduct>

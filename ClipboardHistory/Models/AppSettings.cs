@@ -11,16 +11,12 @@ namespace ClipboardHistory.Models
         public bool EnableImageCapture { get; set; } = true;
         public bool EnableFileCapture { get; set; } = true;
         public int AutoCleanupDays { get; set; } = 30;
-        public bool FilterSensitiveData { get; set; } = true;
         public string DatabasePath { get; set; } = "clipboard_history.db";
         
         // 新增设置项
         public string Author { get; set; } = "何文才";
         public string Version { get; set; } = "1.0.0";
-        public DateTime LastCleanupDate { get; set; } = DateTime.Now;
         public bool EnableAutoCleanup { get; set; } = true;
-        public bool ShowBalloonTips { get; set; } = true;
-        public bool MinimizeToTray { get; set; } = true;
         
         public static AppSettings Default => new AppSettings();
     }
